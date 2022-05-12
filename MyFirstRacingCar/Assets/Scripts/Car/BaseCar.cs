@@ -8,14 +8,14 @@ namespace Car
 {
     public abstract class BaseCar : MonoBehaviour
     {
-        public float FrontWheelMotorForce { get; protected set; }
-        public float RearWheelMotorForce { get; protected set; }
-        public float BreakForce { get; protected set; }
-        public float TurboEngine { get; protected set; }
-        public float TrackDrag { get; protected set; }
-        public float GroundDrag { get; protected set; }
-        public float AirDrag { get; protected set; }
-        public float DownForce { get; protected set; }
+        protected float FrontWheelMotorForce { get; private set; }
+        protected float RearWheelMotorForce { get; private set; }
+        protected float BreakForce { get; set; }
+        protected float TurboEngine { get; private set; }
+        protected float TrackDrag { get; private set; }
+        protected float GroundDrag { get; private set; }
+        protected float AirDrag { get; private set; }
+        protected float DownForce { get; private set; }
         
         
         protected enum WheelsPosition
