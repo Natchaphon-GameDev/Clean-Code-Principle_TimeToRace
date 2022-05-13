@@ -1,6 +1,4 @@
-﻿using System;
-using LapSystem;
-using Manager;
+﻿using Manager;
 using UnityEngine;
 
 namespace CameraController
@@ -11,10 +9,13 @@ namespace CameraController
         [SerializeField] private float translateSpeed = 10f;
         [SerializeField] private float rotationSpeed = 5f;
 
+        [SerializeField] private float addTranslateSpeed = 15f;
+        [SerializeField] private float addRotateSpeed = 5f;
         [SerializeField] private float currentTranslateSpeed;
         [SerializeField] private float currentRotateSpeed;
         
-        private CameraPerspective perspective;
+        private bool _isAddSpeedDone;
+        private CameraPerspective _perspective;
 
         private void Awake()
         {
@@ -30,7 +31,7 @@ namespace CameraController
 
         private void SetupReference()
         {
-            perspective = GetComponent<CameraPerspective>();
+            _perspective = GetComponent<CameraPerspective>();
         }
 
         private void Start()
@@ -46,12 +47,9 @@ namespace CameraController
 
         private void LateUpdate()
         {
-            if (UiManager.Instance.IsGameStart && FinishLapCheckPoint.Instance.IsGameEnded == false)
-            {
-                HandleTranslation();
-                HandleRotation();
-                // AddSpeedToBackCamera();
-            }
+            HandleTranslation();
+            HandleRotation();
+            AddSpeedToBackCamera();
         }
 
         private void HandleRotation()
@@ -63,23 +61,30 @@ namespace CameraController
 
         private void HandleTranslation()
         {
-            var targetPosition = GameManager.Instance.PlayerSpawned.transform.TransformPoint(perspective.offset);
-            transform.position = Vector3.Lerp(transform.position, targetPosition, currentTranslateSpeed * Time.deltaTime);
+            var targetPosition = GameManager.Instance.PlayerSpawned.transform.TransformPoint(_perspective.Offset);
+            transform.position =
+                Vector3.Lerp(transform.position, targetPosition, currentTranslateSpeed * Time.deltaTime);
         }
 
-        //TODO: This Method is looping Do it Once
-        // private void AddSpeedToBackCamera()
-        // {
-        //     if (perspective.GetCameraMode() == CameraMode.BackCamera)
-        //     {
-        //         currentTranslateSpeed += 15f;
-        //         currentRotateSpeed += 5f;
-        //     }
-        //     else
-        //     {
-        //         currentTranslateSpeed = translateSpeed;
-        //         currentRotateSpeed = rotationSpeed;
-        //     }
-        // }
+        private void AddSpeedToBackCamera()
+        {
+            if (_perspective.GetCameraMode() == CameraMode.BackCamera)
+            {
+                if (_isAddSpeedDone)
+                {
+                    return;
+                }
+
+                currentTranslateSpeed += addTranslateSpeed;
+                currentRotateSpeed += addRotateSpeed;
+                _isAddSpeedDone = true;
+            }
+            else
+            {
+                currentTranslateSpeed = translateSpeed;
+                currentRotateSpeed = rotationSpeed;
+                _isAddSpeedDone = false;
+            }
+        }
     }
 }

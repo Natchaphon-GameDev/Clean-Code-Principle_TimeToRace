@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using LapSystem;
-using Manager;
 using UnityEngine;
 
 namespace CameraController
@@ -9,18 +6,20 @@ namespace CameraController
     public class CameraPerspective : MonoBehaviour
     {
         [Header("Scriptable Perspective Setter")] 
-        [SerializeField] private Perspective menuCamera = default;
-        [SerializeField] private Perspective fontCamera = default;
-        [SerializeField] private Perspective topCamera = default;
-        [SerializeField] private Perspective backCamera = default;
+        [SerializeField] private Perspective menuCamera;
+        [SerializeField] private Perspective fontCamera;
+        [SerializeField] private Perspective topCamera;
+        [SerializeField] private Perspective backCamera;
 
-      public Vector3 offset;
+        [NonSerialized]
+        public Vector3 Offset;
 
-        private CameraMode currentCameraMode;
+        private Vector3 _nitroOffset;
+        private CameraMode _currentCameraMode;
 
         public CameraMode GetCameraMode()
         {
-            return currentCameraMode;
+            return _currentCameraMode;
         }
 
         private void Awake()
@@ -46,7 +45,7 @@ namespace CameraController
         {
             transform.position = perspective.GetPosition();
             transform.rotation = Quaternion.Euler(perspective.GetRotation());
-            currentCameraMode = perspective.GetCameraMode();
+            _currentCameraMode = perspective.GetCameraMode();
         }
 
         public void SwitchPerspective(CameraMode cameraMode)
@@ -58,28 +57,34 @@ namespace CameraController
                     break;
                 case CameraMode.FontCamera:
                     SetPerspective(fontCamera);
-                    offset = fontCamera.GetPosition();
+                    Offset = fontCamera.GetPosition();
                     break;
                 case CameraMode.TopCamera:
                     SetPerspective(topCamera);
-                    offset = topCamera.GetPosition();
+                    Offset = topCamera.GetPosition();
+                    AddNitroOffset();
                     break;
                 case CameraMode.BackCamera:
                     SetPerspective(backCamera);
-                    offset = backCamera.GetPosition();
+                    Offset = backCamera.GetPosition();
+                    AddNitroOffset();
                     break;
                 case CameraMode.NitroCamera:
-                    // AddNitroOffset();
+                    SetNitroOffset();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        //TODO: This Method is looping Do it Once
-        // private void AddNitroOffset()
-        // {
-        //     offset += new Vector3(0, 2, -2);
-        // }
+         private void SetNitroOffset()
+         {
+             Offset = _nitroOffset;
+         }
+         
+         private void AddNitroOffset()
+         {
+             _nitroOffset = Offset + new Vector3(0, 2, -2);
+         }
     }
 }

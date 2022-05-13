@@ -1,7 +1,4 @@
-﻿using System;
-using LapSystem;
-using Manager;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CameraController
 {
@@ -12,7 +9,7 @@ namespace CameraController
         [SerializeField] private KeyCode backCameraKey = KeyCode.X;
         [SerializeField] private KeyCode nitroBoostKey = KeyCode.LeftShift;
 
-        private CameraPerspective perspective;
+        private CameraPerspective _perspective;
 
         private void Awake()
         {
@@ -21,39 +18,33 @@ namespace CameraController
 
         private void SetupReference()
         {
-            perspective = GetComponent<CameraPerspective>();
+            _perspective = GetComponent<CameraPerspective>();
         }
 
         private void Update()
         {
-            if (UiManager.Instance.IsGameStart && FinishLapCheckPoint.Instance.IsGameEnded == false)
-            {
-                SetInput();
-            }
+            SetInput();
         }
 
-        protected void SetInput()
+        private void SetInput()
         {
-            ;
-            
             if (Input.GetKeyDown(fontCameraKey))
             {
-                perspective.SwitchPerspective(CameraMode.FontCamera);
+                _perspective.SwitchPerspective(CameraMode.FontCamera);
             }
             else if (Input.GetKeyDown(topCameraKey))
             {
-                perspective.SwitchPerspective(CameraMode.TopCamera);
+                _perspective.SwitchPerspective(CameraMode.TopCamera);
             }
             else if (Input.GetKeyDown(backCameraKey))
             {
-                perspective.SwitchPerspective(CameraMode.BackCamera);
+                _perspective.SwitchPerspective(CameraMode.BackCamera);
             }
 
             if (Input.GetKey(nitroBoostKey))
             {
-                perspective.SwitchPerspective(CameraMode.NitroCamera);
+                _perspective.SwitchPerspective(CameraMode.NitroCamera);
             }
-            
         }
     }
 }
